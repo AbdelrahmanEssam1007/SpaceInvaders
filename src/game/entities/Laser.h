@@ -6,13 +6,14 @@
 
 class Laser {
 public:
-  Laser(Vector2 pos, int speed);
+  Laser(Vector2 pos, int speed, Color originColour);
   void Update();
   void Draw() const;
   bool isActive;
 private:
   Vector2 pos;
   int speed;
+  Color originColour;
   
 };
 

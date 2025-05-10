@@ -1,9 +1,10 @@
 #include "Laser.h"
 
 #include "../../utils/Colours.h"
-Laser::Laser(Vector2 pos, int speed) {
+Laser::Laser(const Vector2 pos, const int speed, const Color originColour) {
   this->pos = pos;
   this->speed = speed;
+  this->originColour = originColour;
   isActive = true;
 }
 void Laser::Update() {
@@ -11,5 +12,5 @@ void Laser::Update() {
   if (pos.y > GetScreenHeight() || pos.y < 0) isActive = false;
 }
 void Laser::Draw() const {
-  if (isActive) DrawRectangle(pos.x, pos.y, 4, 15, Colours::red);
+  if (isActive) DrawRectangle(pos.x, pos.y, 4, 15, originColour);
 }

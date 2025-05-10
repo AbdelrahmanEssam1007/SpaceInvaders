@@ -1,4 +1,6 @@
 #include "SpaceShip.h"
+
+#include "../../utils/Colours.h"
 SpaceShip::SpaceShip() {
   shipTexture = LoadTexture("src/game/assets/spaceship.png");
   shipPos.x = static_cast<float>((GetScreenWidth() - shipTexture.width)/2);
@@ -21,5 +23,5 @@ void SpaceShip::Move(const int direction) {
   }
 }
 void SpaceShip::Fire() {
-  lasers.push_back(new Laser(Vector2{shipPos.x + shipTexture.width/2 -2, shipPos.y}, -6));
+  lasers.push_back(new Laser(Vector2{shipPos.x + shipTexture.width/2 -2, shipPos.y}, -6, Colours::red));
 }
