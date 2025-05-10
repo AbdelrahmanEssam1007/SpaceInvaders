@@ -1,18 +1,21 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "entities/SpaceShip.h"  
+#include "entities/SpaceShip.h"
+#include "entities/Obstacles.h"
 
 class Game {
 public:
   Game();
   ~Game();
-  void Draw() const;
+  void Draw();
   void update();
   void HandleInput();
 private:
-  void CleanUpLasers();
   SpaceShip ship;
+  std::vector<Obstacles> obstacles;
+  void CleanUpLasers();
+  std::vector<Obstacles> CreateObstacles();
 };
 
 

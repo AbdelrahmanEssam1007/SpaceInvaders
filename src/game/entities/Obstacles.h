@@ -1,14 +1,18 @@
 #ifndef OBSTACLES_H
 #define OBSTACLES_H
+#include <vector>
 #include "raylib.h"
+#include "Block.h"
 
 
 class Obstacles {
 public:
   explicit Obstacles(Vector2 pos) ;
   void Draw();
-private:
   Vector2 pos;
+  std::vector<Block> blocks;
+  static std::vector<std::vector<int>> grid;
+private:
 };
 
 

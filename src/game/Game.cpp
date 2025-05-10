@@ -5,13 +5,17 @@
 #include "Game.h"
 
 Game::Game() {
+  obstacles = CreateObstacles();
 }
 Game::~Game() {
 }
-void Game::Draw() const {
+void Game::Draw() {
   ship.Draw();
   for (const auto &laser : ship.lasers) {
     laser->Draw();
+  }
+  for (auto &obstacle : obstacles) {
+    obstacle.Draw();
   }
 }
 void Game::update() {
@@ -36,4 +40,14 @@ void Game::CleanUpLasers() {
       ++it;
     }
   }
+}
+std::vector<Obstacles> Game::CreateObstacles() {
+  const int s_OBSTACLE_WIDTH = Obstacles::grid[0].size() * 3;
+  const float s_GAP = (GetScreenWidth() - s_OBSTACLE_WIDTH*4)/5;
+
+  for (int i = 0; i < 4; ++i) {
+    const float xOffset = (i+1) * s_GAP + i * s_OBSTACLE_WIDTH;
+    obstacles.push_back(Obstacles({xOffset, static_cast<float>(GetScreenHeight() - 100)}));
+  }
+  return obstacles;
 }
