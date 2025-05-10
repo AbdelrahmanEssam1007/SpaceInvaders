@@ -11,6 +11,7 @@ public:
   void update();
   void HandleInput();
 private:
+  void CleanUpLasers();
   SpaceShip ship;
 };
 

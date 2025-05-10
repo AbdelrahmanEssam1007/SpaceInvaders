@@ -21,4 +21,5 @@ void SpaceShip::Move(const int direction) {
   }
 }
 void SpaceShip::Fire() {
+  lasers.push_back(new Laser(Vector2{shipPos.x + shipTexture.width/2 -2, shipPos.y}, -6));
 }

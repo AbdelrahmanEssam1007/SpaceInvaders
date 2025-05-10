@@ -18,24 +18,28 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
     set(FETCHCONTENT_QUIET NO)
     FetchContent_MakeAvailable(raylib)
     set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
-  endif()
-endif()
+  endif ()
+endif ()
 
 # Set the output directory for the executable
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-add_executable(SpaceInvaders src/main.cpp src/game/Game.cpp src/game/entities/SpaceShip.cpp)
+add_executable(SpaceInvaders src/main.cpp 
+        src/game/Game.cpp 
+        src/game/entities/SpaceShip.cpp 
+        src/game/entities/Laser.cpp
+)
 
 target_link_libraries(${PROJECT_NAME} raylib)
 
-if(MSVC)
-  # MSVC-specific settings (e.g., for disabling PDB/ILK generation)
+if (MSVC)
+  # MSVC-specific settings
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /DEBUG:FALSE")
   set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /NODEBUG")
   message(STATUS "Compiling with MSVC")
-else()
+else ()
   # Non-MSVC compilers (e.g., GCC, Clang)
   message(STATUS "Compiling with a non-MSVC compiler")
   # You can add specific flags for GCC/Clang here if needed
-endif()
+endif ()
 

@@ -1,4 +1,3 @@
-#include <iostream>
 #include <raylib.h>
 #include "game/Game.h" 
 #include "utils/Colours.h"
@@ -14,6 +13,7 @@ int main() {
   
   while (!WindowShouldClose()) {
     game.HandleInput();
+    game.update();
     BeginDrawing();
     ClearBackground(Colours::grey);
     game.Draw();
