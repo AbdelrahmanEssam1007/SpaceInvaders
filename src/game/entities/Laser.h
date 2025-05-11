@@ -1,4 +1,3 @@
-
 #ifndef LASER_H
 #define LASER_H
 #include "raylib.h"

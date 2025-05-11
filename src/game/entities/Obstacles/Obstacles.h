@@ -1,8 +1,9 @@
 #ifndef OBSTACLES_H
 #define OBSTACLES_H
 #include <vector>
-#include "raylib.h"
+
 #include "Block.h"
+#include "raylib.h"
 
 
 class Obstacles {

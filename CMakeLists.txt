@@ -25,11 +25,11 @@ endif ()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 add_executable(SpaceInvaders src/main.cpp 
-        src/game/Game.cpp 
-        src/game/entities/SpaceShip.cpp 
+        src/game/Game.cpp
+        src/game/entities/Player/SpaceShip.cpp 
         src/game/entities/Laser.cpp
-        src/game/entities/Block.cpp
-        src/game/entities/Obstacles.cpp
+        src/game/entities/Obstacles/Block.cpp
+        src/game/entities/Obstacles/Obstacles.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} raylib)

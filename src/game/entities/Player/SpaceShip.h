@@ -1,8 +1,9 @@
 #ifndef SPACESHIP_H
 #define SPACESHIP_H
 #include <raylib.h>
-#include "Laser.h"
 #include <vector>
+
+#include "../Laser.h"
 
 class SpaceShip {
   public:

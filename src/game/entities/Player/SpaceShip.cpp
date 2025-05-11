@@ -1,6 +1,6 @@
 #include "SpaceShip.h"
 
-#include "../../utils/Colours.h"
+#include "../../../utils/Colours.h"
 SpaceShip::SpaceShip() {
   shipTexture = LoadTexture("src/game/assets/spaceship.png");
   shipPos.x = static_cast<float>((GetScreenWidth() - shipTexture.width)/2);

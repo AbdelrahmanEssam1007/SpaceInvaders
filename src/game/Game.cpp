@@ -1,7 +1,3 @@
-//
-// Created by Ryzen 2700 on 11-May-25.
-//
-
 #include "Game.h"
 
 Game::Game() {
