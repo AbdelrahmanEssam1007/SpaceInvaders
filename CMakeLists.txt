@@ -30,6 +30,7 @@ add_executable(SpaceInvaders src/main.cpp
         src/game/entities/Laser.cpp
         src/game/entities/Obstacles/Block.cpp
         src/game/entities/Obstacles/Obstacles.cpp
+        src/game/entities/Aliens/Alien.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} raylib)
