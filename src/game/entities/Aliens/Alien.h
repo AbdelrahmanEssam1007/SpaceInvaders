@@ -16,7 +16,7 @@ class Alien {
   Vector2 m_AlienPos;
   explicit Alien(Vector2 position, int alienType);
   void Draw() const;
-  void Update(int direction);
+  //void Update(int direction);
   [[nodiscard]] int GetType() const;
   [[nodiscard]] Color GetColour() const;
 

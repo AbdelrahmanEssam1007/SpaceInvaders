@@ -5,6 +5,7 @@ Game::Game() {
   m_Aliens = CreateAliens();
   m_AliensDirection = 1;
   m_AlienLaserTimer = 0;
+  m_TimeSinceLastMove = 0;
 }
 Game::~Game() {
   Alien::UnloadTextures();
@@ -27,10 +28,16 @@ void Game::Draw() const {
   }
 }
 void Game::update() {
+  m_AlienMoveInterval = std::max(0.1f, 0.5f * (m_Aliens.size() / 55.0f));
   for (const auto& laser : m_Ship.lasers) {
     laser->Update();
   }
-  MoveAliens();
+  const float dt = GetFrameTime();
+  m_TimeSinceLastMove += dt;
+  if (m_TimeSinceLastMove >= m_AlienMoveInterval) {
+    MoveAliens();
+    m_TimeSinceLastMove = 0.0f;
+  }
 
   ShootAlienLaser();
 
@@ -67,17 +74,28 @@ void Game::CleanUpLasers() {
   }
 }
 void Game::MoveAliens() {
-  for (auto& alien : m_Aliens) {
-    if (alien.m_AlienPos.x + alien.s_AlienTextures[alien.GetType() - 1].width >= GetScreenWidth()) {
-      m_AliensDirection = -1;
-      MoveAliensDown(5);
-    }
+  bool shouldMoveDown = false;
+  constexpr int moveDistance = 20;  // Discrete pixel movement per step
 
-    if (alien.m_AlienPos.x <= 0) {
-      m_AliensDirection = 1;
-      MoveAliensDown(5);
+  // Check if any alien has hit the boundary
+  for (auto& alien : m_Aliens) {
+    int alienWidth = alien.s_AlienTextures[alien.GetType() - 1].width;
+    if ((alien.m_AlienPos.x + alienWidth >= GetScreenWidth() && m_AliensDirection > 0) ||
+        (alien.m_AlienPos.x <= 0 && m_AliensDirection < 0)) {
+      shouldMoveDown = true;
+      break;
     }
-    alien.Update(m_AliensDirection);
+  }
+
+  if (shouldMoveDown) {
+    m_AliensDirection *= -1;  // Reverse direction
+    MoveAliensDown(moveDistance);
+  }
+  else {
+    // Move all aliens horizontally
+    for (auto& alien : m_Aliens) {
+      alien.m_AlienPos.x += moveDistance * m_AliensDirection;
+    }
   }
 }
 void Game::MoveAliensDown(const int distance) {

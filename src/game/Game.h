@@ -20,7 +20,9 @@ class Game {
   int m_AliensDirection;
   SpaceShip m_Ship;
   constexpr static float s_AlienLaserTimer = 1.5f;
-  float m_AlienLaserTimer = s_AlienLaserTimer;
+  float m_AlienMoveInterval; 
+  float m_AlienLaserTimer;
+  float m_TimeSinceLastMove;
   std::vector<Obstacles> m_Obstacles;
   std::vector<Alien> m_Aliens;
   std::vector<Laser> m_AlienLasers;

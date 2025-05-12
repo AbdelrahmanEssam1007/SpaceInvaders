@@ -36,9 +36,9 @@ Alien::Alien(const Vector2 position, const int alienType) {
 void Alien::Draw() const {
   DrawTextureV(s_AlienTextures[m_AlienType - 1], m_AlienPos, m_AlienColour);
 }
-void Alien::Update(const int direction) {
-  m_AlienPos.x += direction * GetFrameTime()* 60;  //! needs more testing
-}
+// void Alien::Update(const int direction) {
+//   m_AlienPos.x += direction * GetFrameTime()* 60;  //! needs more testing
+// }
 int Alien::GetType() const {
   return m_AlienType;
 }
