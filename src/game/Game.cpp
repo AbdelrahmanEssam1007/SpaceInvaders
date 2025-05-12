@@ -4,6 +4,7 @@ Game::Game() {
   m_Obstacles = CreateObstacles();
   m_Aliens = CreateAliens();
   m_AliensDirection = 1;
+  m_AlienLaserTimer = 0;
 }
 Game::~Game() {
   Alien::UnloadTextures();
@@ -20,14 +21,24 @@ void Game::Draw() const {
   for (auto& alien : m_Aliens) {
     alien.Draw();
   }
+
+  for (auto& laser : m_AlienLasers) {
+    laser.Draw();
+  }
 }
 void Game::update() {
   for (const auto& laser : m_Ship.lasers) {
     laser->Update();
   }
-  CleanUpLasers();
-
   MoveAliens();
+
+  ShootAlienLaser();
+
+  for (auto& laser : m_AlienLasers) {
+    laser.Update();
+  }
+
+  CleanUpLasers();
 }
 void Game::HandleInput() {
   if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
@@ -40,6 +51,15 @@ void Game::CleanUpLasers() {
   for (auto it = m_Ship.lasers.begin(); it != m_Ship.lasers.end();) {
     if (!(*it)->IsActive()) {
       it = m_Ship.lasers.erase(it);
+    }
+    else {
+      ++it;
+    }
+  }
+
+  for (auto it = m_AlienLasers.begin(); it != m_AlienLasers.end();) {
+    if (!(*it).IsActive()) {
+      it = m_AlienLasers.erase(it);
     }
     else {
       ++it;
@@ -65,6 +85,18 @@ void Game::MoveAliensDown(const int distance) {
     alien.m_AlienPos.y += distance;
   }
 }
+void Game::ShootAlienLaser() {
+  double currentTime = GetTime();
+  if (currentTime - m_AlienLaserTimer >= s_AlienLaserTimer && !m_Aliens.empty()) {
+    const int RandomAlien = GetRandomValue(0, m_Aliens.size() - 1);
+    const Alien& alien = m_Aliens[RandomAlien];
+    const int x = alien.m_AlienPos.x + alien.s_AlienTextures[alien.GetType() - 1].width / 2;
+    const int y = alien.m_AlienPos.y + alien.s_AlienTextures[alien.GetType() - 1].height;
+    m_AlienLasers.push_back(Laser({static_cast<float>(x), static_cast<float>(y)}, 6, alien.GetColour()));
+    m_AlienLaserTimer = GetTime();
+  }
+}
+
 std::vector<Obstacles> Game::CreateObstacles() {
   const int s_OBSTACLE_WIDTH = Obstacles::Grid[0].size() * 3;
   const float s_GAP = (GetScreenWidth() - s_OBSTACLE_WIDTH * 4) / 5;

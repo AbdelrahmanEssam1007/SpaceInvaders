@@ -37,8 +37,11 @@ void Alien::Draw() const {
   DrawTextureV(s_AlienTextures[m_AlienType - 1], m_AlienPos, m_AlienColour);
 }
 void Alien::Update(const int direction) {
-  m_AlienPos.x += direction * GetFrameTime() * 60;  //! needs more testing
+  m_AlienPos.x += direction * GetFrameTime()* 60;  //! needs more testing
 }
-int Alien::GetType() {
+int Alien::GetType() const {
   return m_AlienType;
+}
+Color Alien::GetColour() const {
+  return m_AlienColour;
 }

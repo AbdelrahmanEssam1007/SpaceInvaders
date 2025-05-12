@@ -17,15 +17,19 @@ class Game {
   void HandleInput();
 
  private:
+  int m_AliensDirection;
   SpaceShip m_Ship;
+  constexpr static float s_AlienLaserTimer = 1.5f;
+  float m_AlienLaserTimer = s_AlienLaserTimer;
   std::vector<Obstacles> m_Obstacles;
   std::vector<Alien> m_Aliens;
+  std::vector<Laser> m_AlienLasers;
   std::vector<Obstacles> CreateObstacles();
   static std::vector<Alien> CreateAliens();
-  int m_AliensDirection;
   void CleanUpLasers();
   void MoveAliens();
   void MoveAliensDown(int distance);
+  void ShootAlienLaser();
 };
 
 
