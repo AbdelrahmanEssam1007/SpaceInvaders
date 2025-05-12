@@ -2,26 +2,26 @@
 
 #include "../../../utils/Colours.h"
 SpaceShip::SpaceShip() {
-  shipTexture = LoadTexture("src/game/assets/spaceship.png");
-  shipPos.x = static_cast<float>((GetScreenWidth() - shipTexture.width)/2);
-  shipPos.y = static_cast<float>((GetScreenHeight() - shipTexture.height));
+  m_ShipTexture = LoadTexture("src/game/assets/spaceship.png");
+  m_ShipPos.x = static_cast<float>((GetScreenWidth() - m_ShipTexture.width) / 2);
+  m_ShipPos.y = static_cast<float>((GetScreenHeight() - m_ShipTexture.height));
 }
 
 SpaceShip::~SpaceShip() {
-  UnloadTexture(shipTexture);
+  UnloadTexture(m_ShipTexture);
 }
 void SpaceShip::Draw() const {
-  DrawTextureV(shipTexture, shipPos, WHITE);
+  DrawTextureV(m_ShipTexture, m_ShipPos, WHITE);
 }
 void SpaceShip::Move(const int direction) {
-  shipPos.x += 10 * direction;
-  if (shipPos.x < 0) {
-    shipPos.x = 0;
+  m_ShipPos.x += 10 * direction;
+  if (m_ShipPos.x < 0) {
+    m_ShipPos.x = 0;
   }
-  if (shipPos.x + shipTexture.width > GetScreenWidth()) {
-    shipPos.x = static_cast<float>(GetScreenWidth() - shipTexture.width);
+  if (m_ShipPos.x + m_ShipTexture.width > GetScreenWidth()) {
+    m_ShipPos.x = static_cast<float>(GetScreenWidth() - m_ShipTexture.width);
   }
 }
 void SpaceShip::Fire() {
-  lasers.push_back(new Laser(Vector2{shipPos.x + shipTexture.width/2 -2, shipPos.y}, -6, Colours::red));
+  lasers.push_back(new Laser(Vector2{m_ShipPos.x + m_ShipTexture.width / 2 - 2, m_ShipPos.y}, -6, Colours::red));
 }

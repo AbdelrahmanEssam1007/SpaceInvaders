@@ -2,7 +2,7 @@
 #define COLOURS_H
 #include "raylib.h"
 
-//TODO: Brighten up following colours : Magenta, Blue, Lime
+// TODO: Brighten up following colours : Magenta, Blue, Lime
 
 namespace Colours {
   inline constexpr Color grey = {30, 30, 30, 255};

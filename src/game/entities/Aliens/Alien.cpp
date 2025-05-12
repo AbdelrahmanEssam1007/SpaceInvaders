@@ -2,41 +2,43 @@
 
 #include "../../../utils/Colours.h"
 
-std::array<Texture2D, 3> Alien::g_alienTextures = {};
+std::array<Texture2D, 3> Alien::s_AlienTextures = {};
 
 void Alien::UnloadTextures() {
   for (int i = 0; i < 3; i++) {
-    UnloadTexture(g_alienTextures[i]);
+    UnloadTexture(s_AlienTextures[i]);
   }
 }
-Alien::Alien(const Vector2 pos, const int alienType) {
-  this->alienPos = pos;
-  this->alienType = alienType;
-  if (g_alienTextures[alienType-1].id == 0) {
-    switch (alienType) {
+Alien::Alien(const Vector2 position, const int alienType) {
+  this->m_AlienPos = position;
+  this->m_AlienType = alienType;
+  if (s_AlienTextures[m_AlienType - 1].id == 0) {
+    switch (m_AlienType) {
       case 1:
-        g_alienTextures[alienType-1] = LoadTexture("src/game/assets/alien_1.png");
-        alienColour = Colours::magenta;
+        s_AlienTextures[m_AlienType - 1] = LoadTexture("src/game/assets/alien_1.png");
+        m_AlienColour = Colours::magenta;
         break;
       case 2:
-        g_alienTextures[alienType-1] = LoadTexture("src/game/assets/alien_2.png");
-        alienColour = Colours::blue;
+        s_AlienTextures[m_AlienType - 1] = LoadTexture("src/game/assets/alien_2.png");
+        m_AlienColour = Colours::blue;
         break;
       case 3:
-        g_alienTextures[alienType-1] = LoadTexture("src/game/assets/alien_3.png");
-        alienColour = Colours::lime;
+        s_AlienTextures[m_AlienType - 1] = LoadTexture("src/game/assets/alien_3.png");
+        m_AlienColour = Colours::lime;
         break;
       default:
-        g_alienTextures[alienType-1] = LoadTexture("src/game/assets/alien_1.png");
-        alienColour = Colours::magenta;
+        s_AlienTextures[m_AlienType - 1] = LoadTexture("src/game/assets/alien_1.png");
+        m_AlienColour = Colours::magenta;
         break;
     }
   }
 }
 void Alien::Draw() const {
-  DrawTextureV(g_alienTextures[alienType - 1], alienPos, alienColour);
+  DrawTextureV(s_AlienTextures[m_AlienType - 1], m_AlienPos, m_AlienColour);
 }
 void Alien::Update(const int direction) {
-  alienPos.x += direction *GetFrameTime()*60; //!needs more testing
+  m_AlienPos.x += direction * GetFrameTime() * 60;  //! needs more testing
 }
-
+int Alien::GetType() {
+  return m_AlienType;
+}

@@ -6,18 +6,18 @@
 #include "../Laser.h"
 
 class SpaceShip {
-  public:
-    SpaceShip();
-    ~SpaceShip();
-    void Draw() const;
-    void Move(int direction);
-    void Fire();
-    std::vector<Laser*> lasers;
-  private:
-    Texture2D shipTexture;
-    Vector2 shipPos;
+ public:
+  SpaceShip();
+  ~SpaceShip();
+  void Draw() const;
+  void Move(int direction);
+  void Fire();
+  std::vector<Laser*> lasers;
+
+ private:
+  Texture2D m_ShipTexture;
+  Vector2 m_ShipPos;
 };
 
 
-
-#endif //SPACESHIP_H
+#endif  // SPACESHIP_H

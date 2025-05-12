@@ -8,13 +8,13 @@
 
 
 class Block {
-public:
-  explicit Block(Vector2 pos) ;
+ public:
+  explicit Block(Vector2 position);
   void Draw() const;
-private:
-  Vector2 pos;
+
+ private:
+  Vector2 m_Position{};
 };
 
 
-
-#endif //BLOCK_H
+#endif  // BLOCK_H

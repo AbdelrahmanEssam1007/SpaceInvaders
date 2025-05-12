@@ -7,15 +7,15 @@
 
 
 class Obstacles {
-public:
-  explicit Obstacles(Vector2 pos) ;
-  void Draw();
-  Vector2 pos;
-  std::vector<Block> blocks;
-  static std::vector<std::vector<int>> grid;
-private:
+ public:
+  explicit Obstacles(Vector2 position);
+  void Draw() const;
+  Vector2 m_Position{};
+  std::vector<Block> m_Blocks;
+  static std::vector<std::vector<int>> Grid;
+
+ private:
 };
 
 
-
-#endif //OBSTACLES_H
+#endif  // OBSTACLES_H

@@ -5,27 +5,27 @@
 #include "entities/Obstacles/Obstacles.h"
 #include "entities/Player/SpaceShip.h"
 
-//TODO: implement health for players and enemies
-//TODO: implement score
+// TODO: implement health for players and enemies
+// TODO: implement score
 
 class Game {
  public:
   Game();
   ~Game();
-  void Draw();
+  void Draw() const;
   void update();
   void HandleInput();
 
  private:
-  SpaceShip ship;
-  std::vector<Obstacles> obstacles;
-  std::vector<Alien> aliens;
+  SpaceShip m_Ship;
+  std::vector<Obstacles> m_Obstacles;
+  std::vector<Alien> m_Aliens;
   std::vector<Obstacles> CreateObstacles();
   static std::vector<Alien> CreateAliens();
-  int aliens_direction;
+  int m_AliensDirection;
   void CleanUpLasers();
   void MoveAliens();
-  void MoveAliensDown(int dist);
+  void MoveAliensDown(int distance);
 };
 
 
