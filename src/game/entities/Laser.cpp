@@ -8,7 +8,7 @@ Laser::Laser(const Vector2 pos, const int speed, const Color originColour) {
   m_IsActive = true;
 }
 void Laser::Update() {
-  m_Position.y += m_Speed;
+  m_Position.y += static_cast<float>(m_Speed);
   if (m_Position.y > GetScreenHeight() || m_Position.y < 0) m_IsActive = false;
 }
 void Laser::Draw() const {

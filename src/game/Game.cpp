@@ -77,7 +77,7 @@ void Game::CleanUpLasers() {
   }
 
   for (auto it = m_AlienLasers.begin(); it != m_AlienLasers.end();) {
-    if (!(*it).IsActive()) {
+    if (!it->IsActive()) {
       it = m_AlienLasers.erase(it);
     }
     else {
@@ -120,8 +120,8 @@ void Game::ShootAlienLaser() {
   if (currentTime - m_TimeSinceLastLaser >= s_AlienLaserInterval && !m_Aliens.empty()) {
     const int RandomAlien = GetRandomValue(0, m_Aliens.size() - 1);
     const Alien& alien = m_Aliens[RandomAlien];
-    const int x = alien.m_AlienPos.x + alien.s_AlienTextures[alien.GetType() - 1].width / 2;
-    const int y = alien.m_AlienPos.y + alien.s_AlienTextures[alien.GetType() - 1].height;
+    const int x = alien.m_AlienPos.x + Alien::s_AlienTextures[alien.GetType() - 1].width / 2;
+    const int y = alien.m_AlienPos.y + Alien::s_AlienTextures[alien.GetType() - 1].height;
     m_AlienLasers.push_back(Laser({static_cast<float>(x), static_cast<float>(y)}, 6, alien.GetColour()));
     m_TimeSinceLastLaser = GetTime();
   }
