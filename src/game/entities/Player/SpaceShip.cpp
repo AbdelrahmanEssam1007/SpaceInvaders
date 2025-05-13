@@ -25,3 +25,6 @@ void SpaceShip::Move(const int direction) {
 void SpaceShip::Fire() {
   lasers.push_back(new Laser(Vector2{m_ShipPos.x + m_ShipTexture.width / 2 - 2, m_ShipPos.y}, -6, Colours::red));
 }
+Rectangle SpaceShip::GetHitbox() const {
+  return {m_ShipPos.x, m_ShipPos.y, static_cast<float>(m_ShipTexture.width), static_cast<float>(m_ShipTexture.height)};
+}

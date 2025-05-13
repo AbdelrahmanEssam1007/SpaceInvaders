@@ -37,7 +37,7 @@ void Game::update() {
     m_TimeSinceLastSpawn = GetTime();
     m_MysteryShipInterval = GetRandomValue(10.0, 20.0);
   }
-  m_AlienMoveInterval = std::max(0.1f, 0.5f * (m_Aliens.size() / 55.0f));
+  m_AlienMoveInterval = std::max(0.5f, 1.0f * (m_Aliens.size() / 55.0f));
   for (const auto& laser : m_Ship.lasers) {
     laser->Update();
   }
@@ -56,6 +56,8 @@ void Game::update() {
 
   CleanUpLasers();
   m_MysteryShip.Update();
+
+  CheckForCollisions();
 }
 void Game::HandleInput() {
   if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
@@ -122,6 +124,74 @@ void Game::ShootAlienLaser() {
     const int y = alien.m_AlienPos.y + alien.s_AlienTextures[alien.GetType() - 1].height;
     m_AlienLasers.push_back(Laser({static_cast<float>(x), static_cast<float>(y)}, 6, alien.GetColour()));
     m_TimeSinceLastLaser = GetTime();
+  }
+}
+void Game::CheckForCollisions() {
+  // spaceship lasers
+  for (const auto& laser : m_Ship.lasers) {
+    auto it = m_Aliens.begin();
+    while (it != m_Aliens.end()) {
+      if (CheckCollisionRecs(it->GetHitbox(), laser->GetHitbox())) {
+        it = m_Aliens.erase(it);
+        laser->DeactivateLaser();
+      }
+      else {
+        ++it;
+      }
+    }
+    for (auto& obstacle : m_Obstacles) {
+      auto bit = obstacle.m_Blocks.begin();
+      while (bit != obstacle.m_Blocks.end()) {
+        if (CheckCollisionRecs(bit->GetHitbox(), laser->GetHitbox())) {
+          bit = obstacle.m_Blocks.erase(bit);
+          laser->DeactivateLaser();
+        }
+        else {
+          ++bit;
+        }
+      }
+    }
+
+    if (CheckCollisionRecs(m_MysteryShip.GetHitbox(), laser->GetHitbox())) {
+      m_MysteryShip.Deactivate();
+      laser->DeactivateLaser();
+    }
+  }
+  // alien lasers
+  for (auto& laser : m_AlienLasers) {
+    if (CheckCollisionRecs(m_Ship.GetHitbox(), laser.GetHitbox())) {
+      laser.DeactivateLaser();
+    }
+    for (auto& obstacle : m_Obstacles) {
+      auto bit = obstacle.m_Blocks.begin();
+      while (bit != obstacle.m_Blocks.end()) {
+        if (CheckCollisionRecs(bit->GetHitbox(), laser.GetHitbox())) {
+          bit = obstacle.m_Blocks.erase(bit);
+          laser.DeactivateLaser();
+        }
+        else {
+          ++bit;
+        }
+      }
+    }
+  }
+
+  // alien collisions
+  for (auto& alien : m_Aliens) {
+    for (auto& obstacle : m_Obstacles) {
+      auto it = obstacle.m_Blocks.begin();
+      while (it != obstacle.m_Blocks.end()) {
+        if (CheckCollisionRecs(it->GetHitbox(), alien.GetHitbox())) {
+          it = obstacle.m_Blocks.erase(it);
+        }
+        else {
+          ++it;
+        }
+      }
+    }
+
+    if (CheckCollisionRecs(alien.GetHitbox(), m_Ship.GetHitbox())) {
+    }
   }
 }
 

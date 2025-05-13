@@ -5,12 +5,14 @@
 
 constexpr int g_SCREEN_WIDTH = 700;
 constexpr int g_SCREEN_HEIGHT = 750;
+const Image g_LOGO = LoadImage("src/game/assets/logo.png");
 
 // TODO: Add music + sounds
 // TODO: Add menu
 
 int main() {
   InitWindow(g_SCREEN_WIDTH, g_SCREEN_HEIGHT, "Space Invaders");
+  SetWindowIcon(g_LOGO);
   SetTargetFPS(60);
 
   Game game;

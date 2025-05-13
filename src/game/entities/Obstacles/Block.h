@@ -11,6 +11,7 @@ class Block {
  public:
   explicit Block(Vector2 position);
   void Draw() const;
+  [[nodiscard]] Rectangle GetHitbox() const;
 
  private:
   Vector2 m_Position{};

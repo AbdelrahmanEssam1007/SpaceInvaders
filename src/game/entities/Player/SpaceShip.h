@@ -13,6 +13,7 @@ class SpaceShip {
   void Move(int direction);
   void Fire();
   std::vector<Laser*> lasers;
+  [[nodiscard]] Rectangle GetHitbox() const;
 
  private:
   Texture2D m_ShipTexture;

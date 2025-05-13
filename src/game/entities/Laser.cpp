@@ -14,6 +14,12 @@ void Laser::Update() {
 void Laser::Draw() const {
   if (m_IsActive) DrawRectangle(m_Position.x, m_Position.y, 4, 15, m_OriginColour);
 }
+void Laser::DeactivateLaser() {
+  m_IsActive = false;
+}
 bool Laser::IsActive() const {
   return m_IsActive;
+}
+Rectangle Laser::GetHitbox() const {
+  return {m_Position.x, m_Position.y, 4, 15};
 }

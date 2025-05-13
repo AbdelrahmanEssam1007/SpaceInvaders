@@ -19,6 +19,7 @@ class Game {
 
  private:
   int m_AliensDirection;
+  int m_PlayerLives; // TODO: implement
   SpaceShip m_Ship;
   MysteryShip m_MysteryShip;
   constexpr static float s_AlienLaserInterval = 1.5f;
@@ -36,6 +37,7 @@ class Game {
   void MoveAliens();
   void MoveAliensDown(int distance);
   void ShootAlienLaser();
+  void CheckForCollisions();
 };
 
 

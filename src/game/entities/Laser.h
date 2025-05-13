@@ -8,8 +8,9 @@ class Laser {
   Laser(Vector2 pos, int speed, Color originColour);
   void Update();
   void Draw() const;
+  void DeactivateLaser();
   [[nodiscard]] bool IsActive() const;
-
+  [[nodiscard]] Rectangle GetHitbox() const;
  private:
   Vector2 m_Position;
   int m_Speed;

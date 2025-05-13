@@ -45,3 +45,6 @@ int Alien::GetType() const {
 Color Alien::GetColour() const {
   return m_AlienColour;
 }
+Rectangle Alien::GetHitbox() const {
+  return {m_AlienPos.x, m_AlienPos.y, static_cast<float>(s_AlienTextures[m_AlienType - 1].width), static_cast<float>(s_AlienTextures[m_AlienType - 1].height)};
+}

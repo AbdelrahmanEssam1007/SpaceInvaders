@@ -14,7 +14,9 @@ class MysteryShip {
   void Draw() const;
   void Update();
   void Spawn();
+  void Deactivate();
   [[nodiscard]] bool IsAlive() const;
+  [[nodiscard]] Rectangle GetHitbox() const;
 
  private:
   Vector2 m_ShipPos;

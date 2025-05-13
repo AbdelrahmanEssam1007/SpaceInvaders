@@ -29,11 +29,26 @@ void MysteryShip::Spawn() {
   if (startSide == 0) {
     m_ShipPos.x = 0;
     m_ShipSpeed = 3;
-  } else {
+  }
+  else {
     m_ShipPos.x = GetScreenWidth() - m_ShipTexture.width;
     m_ShipSpeed = -3;
   }
   m_IsAlive = true;
+}
+void MysteryShip::Deactivate() {
+  m_IsAlive = false;
+}
+bool MysteryShip::IsAlive() const {
+  return m_IsAlive;
+}
+Rectangle MysteryShip::GetHitbox() const {
+  if (m_IsAlive) {
+    return {m_ShipPos.x, m_ShipPos.y, static_cast<float>(m_ShipTexture.width), static_cast<float>(m_ShipTexture.height)};
+  }
+  else {
+    return {m_ShipPos.x, m_ShipPos.y, 0, 0}; 
+  }
 }
 
 

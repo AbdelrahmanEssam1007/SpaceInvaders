@@ -7,3 +7,7 @@ Block::Block(const Vector2 position) {
 void Block::Draw() const {
   DrawRectangle(m_Position.x, m_Position.y, 3, 3, Colours::green);
 }
+Rectangle Block::GetHitbox() const {
+  const Rectangle hitbox = {m_Position.x, m_Position.y, 3, 3};
+  return hitbox;
+}
