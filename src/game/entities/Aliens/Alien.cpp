@@ -20,7 +20,7 @@ Alien::Alien(const Vector2 position, const int alienType) {
         break;
       case 2:
         s_AlienTextures[m_AlienType - 1] = LoadTexture("src/game/assets/alien_2.png");
-        m_AlienColour = Colours::blue;
+        m_AlienColour = Colours::cyan;
         break;
       case 3:
         s_AlienTextures[m_AlienType - 1] = LoadTexture("src/game/assets/alien_3.png");
@@ -34,7 +34,7 @@ Alien::Alien(const Vector2 position, const int alienType) {
   }
 }
 void Alien::Draw() const {
-  DrawTextureV(s_AlienTextures[m_AlienType - 1], m_AlienPos, m_AlienColour);
+  DrawTextureV(s_AlienTextures[m_AlienType - 1], m_AlienPos, WHITE);
 }
 // void Alien::Update(const int direction) {
 //   m_AlienPos.x += direction * GetFrameTime()* 60;  //! needs more testing

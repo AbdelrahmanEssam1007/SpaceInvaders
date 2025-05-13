@@ -4,14 +4,17 @@ Game::Game() {
   m_Obstacles = CreateObstacles();
   m_Aliens = CreateAliens();
   m_AliensDirection = 1;
-  m_AlienLaserTimer = 0;
+  m_TimeSinceLastLaser = 0;
   m_TimeSinceLastMove = 0;
+  m_TimeSinceLastSpawn = 0;
+  m_MysteryShipInterval = GetRandomValue(10.0, 20.0);
 }
 Game::~Game() {
   Alien::UnloadTextures();
 }
 void Game::Draw() const {
   m_Ship.Draw();
+  m_MysteryShip.Draw();
   for (const auto& laser : m_Ship.lasers) {
     laser->Draw();
   }
@@ -28,6 +31,12 @@ void Game::Draw() const {
   }
 }
 void Game::update() {
+  double currentTime = GetTime();
+  if (currentTime - m_TimeSinceLastSpawn >= m_MysteryShipInterval) {
+    m_MysteryShip.Spawn();
+    m_TimeSinceLastSpawn = GetTime();
+    m_MysteryShipInterval = GetRandomValue(10.0, 20.0);
+  }
   m_AlienMoveInterval = std::max(0.1f, 0.5f * (m_Aliens.size() / 55.0f));
   for (const auto& laser : m_Ship.lasers) {
     laser->Update();
@@ -46,6 +55,7 @@ void Game::update() {
   }
 
   CleanUpLasers();
+  m_MysteryShip.Update();
 }
 void Game::HandleInput() {
   if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
@@ -79,7 +89,7 @@ void Game::MoveAliens() {
 
   // Check if any alien has hit the boundary
   for (auto& alien : m_Aliens) {
-    int alienWidth = alien.s_AlienTextures[alien.GetType() - 1].width;
+    const int alienWidth = alien.s_AlienTextures[alien.GetType() - 1].width;
     if ((alien.m_AlienPos.x + alienWidth >= GetScreenWidth() && m_AliensDirection > 0) ||
         (alien.m_AlienPos.x <= 0 && m_AliensDirection < 0)) {
       shouldMoveDown = true;
@@ -105,13 +115,13 @@ void Game::MoveAliensDown(const int distance) {
 }
 void Game::ShootAlienLaser() {
   double currentTime = GetTime();
-  if (currentTime - m_AlienLaserTimer >= s_AlienLaserTimer && !m_Aliens.empty()) {
+  if (currentTime - m_TimeSinceLastLaser >= s_AlienLaserInterval && !m_Aliens.empty()) {
     const int RandomAlien = GetRandomValue(0, m_Aliens.size() - 1);
     const Alien& alien = m_Aliens[RandomAlien];
     const int x = alien.m_AlienPos.x + alien.s_AlienTextures[alien.GetType() - 1].width / 2;
     const int y = alien.m_AlienPos.y + alien.s_AlienTextures[alien.GetType() - 1].height;
     m_AlienLasers.push_back(Laser({static_cast<float>(x), static_cast<float>(y)}, 6, alien.GetColour()));
-    m_AlienLaserTimer = GetTime();
+    m_TimeSinceLastLaser = GetTime();
   }
 }
 
