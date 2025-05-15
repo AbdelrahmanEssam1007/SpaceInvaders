@@ -1,10 +1,18 @@
 #include "Game.h"
 
+#include <fstream>
+#include <iostream>
+
 Game::Game() {
+  m_Music = LoadMusicStream("src/game/sounds/music.ogg");
+  m_ExplosionSound = LoadSound("src/game/sounds/explosion.ogg");
+  PlayMusicStream(m_Music);
   InitGame();
 }
 Game::~Game() {
   Alien::UnloadTextures();
+  UnloadMusicStream(m_Music);
+  UnloadSound(m_ExplosionSound);
 }
 void Game::Draw() const {
   m_Ship.Draw();
@@ -77,6 +85,36 @@ void Game::InitGame() {
   m_Score = 0;
   m_Running = true;
   m_LevelNumber = 1;
+  m_HighScore = LoadHighScore();
+}
+void Game::CheckHighScore() {
+  if (m_Score > m_HighScore) {
+    m_HighScore = m_Score;
+    SaveHighScore(m_HighScore);
+  }
+}
+void Game::SaveHighScore(int score) {
+  std::ofstream file("highscore.txt");
+  if (file.is_open()) {
+    file << score;
+    file.close();
+  }
+  else {
+    std::cerr << "Failed to open file for writing." << std::endl;
+  }
+}
+int Game::LoadHighScore() {
+  std::ifstream file("highscore.txt");
+  if (file.is_open()) {
+    int score;
+    file >> score;
+    file.close();
+    return score;
+  }
+  else {
+    std::cerr << "Failed to open file for reading." << std::endl;
+    return 0;
+  }
 }
 void Game::HandleInput() {
   if (!m_Running) {
@@ -164,6 +202,7 @@ void Game::CheckForCollisions() {
     auto it = m_Aliens.begin();
     while (it != m_Aliens.end()) {
       if (CheckCollisionRecs(it->GetHitbox(), laser->GetHitbox())) {
+        PlaySound(m_ExplosionSound);
         if (it->GetType() == 1) {
           m_Score += 10;
         }
@@ -173,6 +212,7 @@ void Game::CheckForCollisions() {
         else if (it->GetType() == 3) {
           m_Score += 30;
         }
+        CheckHighScore();
         it = m_Aliens.erase(it);
         laser->DeactivateLaser();
       }
@@ -195,7 +235,9 @@ void Game::CheckForCollisions() {
 
     if (CheckCollisionRecs(m_MysteryShip.GetHitbox(), laser->GetHitbox())) {
       m_MysteryShip.Deactivate();
+      PlaySound(m_ExplosionSound);
       m_Score += 50;
+      CheckHighScore();
       laser->DeactivateLaser();
     }
   }

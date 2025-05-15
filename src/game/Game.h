@@ -6,8 +6,6 @@
 #include "entities/Obstacles/Obstacles.h"
 #include "entities/Player/SpaceShip.h"
 
-// TODO: implement score
-
 class Game {
  public:
   Game();
@@ -19,6 +17,8 @@ class Game {
   int m_Score;
   bool m_Running;
   int m_LevelNumber;
+  int m_HighScore;
+  Music m_Music;
 
  private:
   int m_AliensDirection;
@@ -46,6 +46,10 @@ class Game {
   void CheckForCollisions();
   void Reset();
   void InitGame();
+  void CheckHighScore();
+  void SaveHighScore(int score);
+  static int LoadHighScore();
+  Sound m_ExplosionSound;
 };
 
 

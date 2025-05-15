@@ -9,9 +9,6 @@ constexpr int g_SCREEN_WIDTH = 750;
 constexpr int g_SCREEN_HEIGHT = 700;
 const Image g_LOGO = LoadImage("src/game/assets/logo.png");
 
-// TODO: Add music + sounds
-// TODO: Add menu
-
 std::string FormatScore(const int score, const int width) {
   std::string scoreString = std::to_string(score);
   const int zeros = width - scoreString.length();
@@ -22,6 +19,7 @@ std::string FormatScore(const int score, const int width) {
 
 int main() {
   InitWindow(g_SCREEN_WIDTH + g_OFFSET, g_SCREEN_HEIGHT + 2 * g_OFFSET, "Space Invaders");
+  InitAudioDevice();
 
   const Font font = LoadFontEx("src/game/assets/font.ttf", 64, nullptr, 0);
   const Texture2D shipImage = LoadTexture("src/game/assets/spaceship.png");
@@ -32,6 +30,7 @@ int main() {
   Game game;
 
   while (!WindowShouldClose()) {
+    UpdateMusicStream(game.m_Music);
     game.HandleInput();
     game.update();
     BeginDrawing();
@@ -53,8 +52,12 @@ int main() {
     DrawTextEx(font, "SCORE", {50, 20}, 20, 2, WHITE);
     std::string scoreString = FormatScore(game.m_Score, 5);
     DrawTextEx(font, scoreString.c_str(), {50, 50}, 20, 2, WHITE);
+    DrawTextEx(font,"HIGH-SCORE", {500, 20}, 20, 2, WHITE);
+    std::string highScoreString = FormatScore(game.m_HighScore, 5);
+    DrawTextEx(font, highScoreString.c_str(), {500, 50}, 20, 2, WHITE);
 
     EndDrawing();
   }
+  CloseAudioDevice();
   CloseWindow();
 }

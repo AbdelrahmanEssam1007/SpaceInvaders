@@ -19,6 +19,8 @@ class SpaceShip {
  private:
   Texture2D m_ShipTexture;
   Vector2 m_ShipPos;
+  Sound m_ShipLaserSound;
+  int m_TimeSinceLastFire;
 };
 
 
