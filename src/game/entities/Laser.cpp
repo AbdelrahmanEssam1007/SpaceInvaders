@@ -9,7 +9,7 @@ Laser::Laser(const Vector2 pos, const int speed, const Color originColour) {
 }
 void Laser::Update() {
   m_Position.y += static_cast<float>(m_Speed);
-  if (m_Position.y > GetScreenHeight() || m_Position.y < 0) m_IsActive = false;
+  if (m_Position.y > GetScreenHeight() -100 || m_Position.y < 25) m_IsActive = false;
 }
 void Laser::Draw() const {
   if (m_IsActive) DrawRectangle(m_Position.x, m_Position.y, 4, 15, m_OriginColour);

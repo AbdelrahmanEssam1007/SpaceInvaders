@@ -1,13 +1,7 @@
 #include "Game.h"
 
 Game::Game() {
-  m_Obstacles = CreateObstacles();
-  m_Aliens = CreateAliens();
-  m_AliensDirection = 1;
-  m_TimeSinceLastLaser = 0;
-  m_TimeSinceLastMove = 0;
-  m_TimeSinceLastSpawn = 0;
-  m_MysteryShipInterval = GetRandomValue(10.0, 20.0);
+  InitGame();
 }
 Game::~Game() {
   Alien::UnloadTextures();
@@ -31,6 +25,7 @@ void Game::Draw() const {
   }
 }
 void Game::update() {
+  if (!m_Running) return;
   double currentTime = GetTime();
   if (currentTime - m_TimeSinceLastSpawn >= m_MysteryShipInterval) {
     m_MysteryShip.Spawn();
@@ -58,13 +53,47 @@ void Game::update() {
   m_MysteryShip.Update();
 
   CheckForCollisions();
+
+  if (m_Aliens.empty()) {
+    ClearStage();
+  }
+}
+void Game::Reset() {
+  m_Ship.Reset();
+  m_Aliens.clear();
+  m_AlienLasers.clear();
+  m_Obstacles.clear();
+}
+void Game::InitGame() {
+  m_Obstacles = CreateObstacles();
+  m_Aliens = CreateAliens();
+  m_AliensDirection = 1;
+  m_TimeSinceLastLaser = 0;
+  m_TimeSinceLastMove = 0;
+  m_TimeSinceLastSpawn = 0;
+  m_MysteryShipInterval = GetRandomValue(10.0, 20.0);
+  m_AlienMoveInterval = 1.0f;
+  m_PlayerLives = 3;
+  m_Score = 0;
+  m_Running = true;
+  m_LevelNumber = 1;
 }
 void Game::HandleInput() {
+  if (!m_Running) {
+    if (IsKeyPressed(KEY_ENTER)) {
+      Reset();
+      InitGame();
+    }
+    return;
+  }
   if (IsKeyDown(KEY_RIGHT) || IsKeyDown(KEY_D))
     m_Ship.Move(1);
   else if (IsKeyDown(KEY_LEFT) || IsKeyDown(KEY_A))
     m_Ship.Move(-1);
   if (IsKeyPressed(KEY_SPACE)) m_Ship.Fire();
+}
+int Game::GetLives() const {
+  return m_PlayerLives;
 }
 void Game::CleanUpLasers() {
   for (auto it = m_Ship.lasers.begin(); it != m_Ship.lasers.end();) {
@@ -92,8 +121,8 @@ void Game::MoveAliens() {
   // Check if any alien has hit the boundary
   for (auto& alien : m_Aliens) {
     const int alienWidth = alien.s_AlienTextures[alien.GetType() - 1].width;
-    if ((alien.m_AlienPos.x + alienWidth >= GetScreenWidth() && m_AliensDirection > 0) ||
-        (alien.m_AlienPos.x <= 0 && m_AliensDirection < 0)) {
+    if ((alien.m_AlienPos.x + alienWidth > GetScreenWidth() - 25 && m_AliensDirection > 0) ||
+        (alien.m_AlienPos.x <= 25 && m_AliensDirection < 0)) {
       shouldMoveDown = true;
       break;
     }
@@ -126,12 +155,24 @@ void Game::ShootAlienLaser() {
     m_TimeSinceLastLaser = GetTime();
   }
 }
+void Game::GameOver() {
+  m_Running = false;
+}
 void Game::CheckForCollisions() {
   // spaceship lasers
   for (const auto& laser : m_Ship.lasers) {
     auto it = m_Aliens.begin();
     while (it != m_Aliens.end()) {
       if (CheckCollisionRecs(it->GetHitbox(), laser->GetHitbox())) {
+        if (it->GetType() == 1) {
+          m_Score += 10;
+        }
+        else if (it->GetType() == 2) {
+          m_Score += 20;
+        }
+        else if (it->GetType() == 3) {
+          m_Score += 30;
+        }
         it = m_Aliens.erase(it);
         laser->DeactivateLaser();
       }
@@ -154,6 +195,7 @@ void Game::CheckForCollisions() {
 
     if (CheckCollisionRecs(m_MysteryShip.GetHitbox(), laser->GetHitbox())) {
       m_MysteryShip.Deactivate();
+      m_Score += 50;
       laser->DeactivateLaser();
     }
   }
@@ -161,6 +203,10 @@ void Game::CheckForCollisions() {
   for (auto& laser : m_AlienLasers) {
     if (CheckCollisionRecs(m_Ship.GetHitbox(), laser.GetHitbox())) {
       laser.DeactivateLaser();
+      m_PlayerLives--;
+      if (m_PlayerLives == 0) {
+        GameOver();
+      }
     }
     for (auto& obstacle : m_Obstacles) {
       auto bit = obstacle.m_Blocks.begin();
@@ -191,6 +237,7 @@ void Game::CheckForCollisions() {
     }
 
     if (CheckCollisionRecs(alien.GetHitbox(), m_Ship.GetHitbox())) {
+      GameOver();
     }
   }
 }
@@ -201,7 +248,7 @@ std::vector<Obstacles> Game::CreateObstacles() {
 
   for (int i = 0; i < 4; ++i) {
     const float xOffset = (i + 1) * s_GAP + i * s_OBSTACLE_WIDTH;
-    m_Obstacles.push_back(Obstacles({xOffset, static_cast<float>(GetScreenHeight() - 100)}));
+    m_Obstacles.push_back(Obstacles({xOffset, static_cast<float>(GetScreenHeight() - 200)}));
   }
   return m_Obstacles;
 }
@@ -217,10 +264,22 @@ std::vector<Alien> Game::CreateAliens() {
       AlienType = 1;
 
     for (int column = 0; column < 11; ++column) {
-      const float x = 80 + column * 50;
+      const float x = 130 + column * 50;
       const float y = 115 + row * 50;
       s_aliens.push_back(Alien({x, y}, AlienType));
     }
   }
   return s_aliens;
+}
+void Game::ClearStage() {
+  m_Obstacles = CreateObstacles();
+  m_Aliens = CreateAliens();
+  m_AliensDirection = 1;
+  m_TimeSinceLastLaser = 0;
+  m_TimeSinceLastMove = 0;
+  m_TimeSinceLastSpawn = 0;
+  m_MysteryShipInterval = GetRandomValue(10.0, 20.0);
+  m_AlienMoveInterval = 1.0f;
+  m_PlayerLives++;
+  m_LevelNumber++;
 }

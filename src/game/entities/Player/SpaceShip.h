@@ -12,6 +12,7 @@ class SpaceShip {
   void Draw() const;
   void Move(int direction);
   void Fire();
+  void Reset();
   std::vector<Laser*> lasers;
   [[nodiscard]] Rectangle GetHitbox() const;
 
