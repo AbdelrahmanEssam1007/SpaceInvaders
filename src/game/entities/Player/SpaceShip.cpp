@@ -26,11 +26,11 @@ void SpaceShip::Move(const int direction) {
   }
 }
 void SpaceShip::Fire() {
-  //if (GetTime() - m_TimeSinceLastFire >= 1.0f) {
+  if (GetTime() - m_TimeSinceLastFire >= 1.0f) {
     lasers.push_back(new Laser(Vector2{m_ShipPos.x + m_ShipTexture.width / 2 - 2, m_ShipPos.y}, -6, Colours::red));
     m_TimeSinceLastFire = GetTime();
     PlaySound(m_ShipLaserSound);
-  //}
+  }
 }
 void SpaceShip::Reset() {
   m_ShipPos.x = static_cast<float>((GetScreenWidth() - m_ShipTexture.width) / 2);
