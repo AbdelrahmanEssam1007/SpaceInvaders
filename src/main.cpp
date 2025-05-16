@@ -39,8 +39,24 @@ int main() {
     DrawLineEx({10, 730}, {790, 730}, 2, WHITE);
     game.Draw();
     if (!game.m_Running) {
-      DrawTextEx(font, "Game Over", {500, 750}, 20, 2, WHITE);
-    }else {
+      DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(GRAY, 0.5f));
+
+      const char* msg1 = "Game Over";
+      const char* msg2 = "Press Enter to Restart";
+
+      float fontSize1 = 60;
+      float fontSize2 = 30;
+
+      Vector2 pos1 = MeasureTextEx(font, msg1, fontSize1, 2);
+      Vector2 pos2 = MeasureTextEx(font, msg2, fontSize2, 2);
+
+      float centerY = GetScreenHeight() / 2.0f;
+
+      DrawTextEx(font, msg1, {(GetScreenWidth() - pos1.x) / 2, centerY - pos1.y}, fontSize1, 2, WHITE);
+
+      DrawTextEx(font, msg2, {(GetScreenWidth() - pos2.x) / 2, centerY + 10}, fontSize2, 2, WHITE);
+    }
+    else {
       std::string levelString = "Level: " + std::to_string(game.m_LevelNumber);
       DrawTextEx(font, levelString.c_str(), {500, 750}, 20, 2, WHITE);
     }
@@ -52,7 +68,7 @@ int main() {
     DrawTextEx(font, "SCORE", {50, 20}, 20, 2, WHITE);
     std::string scoreString = FormatScore(game.m_Score, 5);
     DrawTextEx(font, scoreString.c_str(), {50, 50}, 20, 2, WHITE);
-    DrawTextEx(font,"HIGH-SCORE", {500, 20}, 20, 2, WHITE);
+    DrawTextEx(font, "HIGH-SCORE", {500, 20}, 20, 2, WHITE);
     std::string highScoreString = FormatScore(game.m_HighScore, 5);
     DrawTextEx(font, highScoreString.c_str(), {500, 50}, 20, 2, WHITE);
 
