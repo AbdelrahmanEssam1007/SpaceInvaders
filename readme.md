@@ -65,7 +65,7 @@ GitHub repository.
 * Only one UFO can exist at a time
 
 ### WIP Features
-* Main Menu, Pause, Update to Game Over Screen
+* Main Menu, Pause screens
 * Updated music and sound effects
 * Improved AI for aliens
 * Sprite animations
