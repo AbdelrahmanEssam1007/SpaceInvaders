@@ -6,6 +6,7 @@
 Game::Game() {
   m_Music = LoadMusicStream("src/game/sounds/music.ogg");
   m_ExplosionSound = LoadSound("src/game/sounds/explosion.ogg");
+  m_GameOverSound = LoadSound("src/game/sounds/game_over.mp3");
   PlayMusicStream(m_Music);
   InitGame();
 }
@@ -13,6 +14,7 @@ Game::~Game() {
   Alien::UnloadTextures();
   UnloadMusicStream(m_Music);
   UnloadSound(m_ExplosionSound);
+  UnloadSound(m_GameOverSound);
 }
 void Game::Draw() const {
   m_Ship.Draw();
@@ -33,37 +35,39 @@ void Game::Draw() const {
   }
 }
 void Game::update() {
-  if (!m_Running) return;
-  double currentTime = GetTime();
-  if (currentTime - m_TimeSinceLastSpawn >= m_MysteryShipInterval) {
-    m_MysteryShip.Spawn();
-    m_TimeSinceLastSpawn = GetTime();
-    m_MysteryShipInterval = GetRandomValue(10.0, 20.0);
-  }
-  m_AlienMoveInterval = std::max(0.5f, 1.0f * (m_Aliens.size() / 55.0f));
-  for (const auto& laser : m_Ship.lasers) {
-    laser->Update();
-  }
-  const float dt = GetFrameTime();
-  m_TimeSinceLastMove += dt;
-  if (m_TimeSinceLastMove >= m_AlienMoveInterval) {
-    MoveAliens();
-    m_TimeSinceLastMove = 0.0f;
-  }
+  if (m_Running) {
+    double currentTime = GetTime();
+    if (currentTime - m_TimeSinceLastSpawn >= m_MysteryShipInterval) {
+      m_MysteryShip.Spawn();
+      m_TimeSinceLastSpawn = GetTime();
+      m_MysteryShipInterval = GetRandomValue(10.0, 20.0);
+    }
+    const float dt = GetFrameTime();
 
-  ShootAlienLaser();
+    for (const auto& laser : m_Ship.lasers) {
+      laser->Update();
+    }
+    m_AlienMoveInterval = std::max(0.5f, 1.0f * (m_Aliens.size() / 55.0f));
+    m_TimeSinceLastMove += dt;
+    if (m_TimeSinceLastMove >= m_AlienMoveInterval) {
+      MoveAliens();
+      m_TimeSinceLastMove = 0.0f;
+    }
 
-  for (auto& laser : m_AlienLasers) {
-    laser.Update();
-  }
+    ShootAlienLaser();
 
-  CleanUpLasers();
-  m_MysteryShip.Update();
+    for (auto& laser : m_AlienLasers) {
+      laser.Update();
+    }
 
-  CheckForCollisions();
+    m_MysteryShip.Update();
 
-  if (m_Aliens.empty()) {
-    ClearStage();
+    CheckForCollisions();
+
+    if (m_Aliens.empty()) {
+      ClearStage();
+    }
+    CleanUpLasers();
   }
 }
 void Game::Reset() {
@@ -71,6 +75,7 @@ void Game::Reset() {
   m_Aliens.clear();
   m_AlienLasers.clear();
   m_Obstacles.clear();
+  PlayMusicStream(m_Music);
 }
 void Game::InitGame() {
   m_Obstacles = CreateObstacles();
@@ -189,6 +194,7 @@ void Game::ShootAlienLaser() {
     const Alien& alien = m_Aliens[RandomAlien];
     const int x = alien.m_AlienPos.x + Alien::s_AlienTextures[alien.GetType() - 1].width / 2;
     const int y = alien.m_AlienPos.y + Alien::s_AlienTextures[alien.GetType() - 1].height;
+    std::cout << (int)alien.GetColour().a << std::endl;
     m_AlienLasers.push_back(Laser({static_cast<float>(x), static_cast<float>(y)}, 6, alien.GetColour()));
     m_TimeSinceLastLaser = GetTime();
   }
@@ -247,6 +253,9 @@ void Game::CheckForCollisions() {
       laser.DeactivateLaser();
       m_PlayerLives--;
       if (m_PlayerLives == 0) {
+        StopMusicStream(m_Music);
+        PlaySound(m_ExplosionSound);
+        PlaySound(m_GameOverSound);
         GameOver();
       }
     }

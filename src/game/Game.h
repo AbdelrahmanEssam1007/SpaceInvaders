@@ -50,6 +50,7 @@ class Game {
   void SaveHighScore(int score);
   static int LoadHighScore();
   Sound m_ExplosionSound;
+  Sound m_GameOverSound;
 };
 
 
