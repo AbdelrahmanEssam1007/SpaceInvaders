@@ -194,7 +194,6 @@ void Game::ShootAlienLaser() {
     const Alien& alien = m_Aliens[RandomAlien];
     const int x = alien.m_AlienPos.x + Alien::s_AlienTextures[alien.GetType() - 1].width / 2;
     const int y = alien.m_AlienPos.y + Alien::s_AlienTextures[alien.GetType() - 1].height;
-    std::cout << (int)alien.GetColour().a << std::endl;
     m_AlienLasers.push_back(Laser({static_cast<float>(x), static_cast<float>(y)}, 6, alien.GetColour()));
     m_TimeSinceLastLaser = GetTime();
   }

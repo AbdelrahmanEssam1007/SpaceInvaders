@@ -41,16 +41,16 @@ int main() {
     if (!game.m_Running) {
       DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(GRAY, 0.5f));
 
-      const char* msg1 = "Game Over";
-      const char* msg2 = "Press Enter to Restart";
+      const auto msg1 = "Game Over";
+      const auto msg2 = "Press Enter to Restart";
 
-      float fontSize1 = 60;
-      float fontSize2 = 30;
+      constexpr float fontSize1 = 60;
+      constexpr float fontSize2 = 30;
 
       Vector2 pos1 = MeasureTextEx(font, msg1, fontSize1, 2);
       Vector2 pos2 = MeasureTextEx(font, msg2, fontSize2, 2);
 
-      float centerY = GetScreenHeight() / 2.0f;
+      const float centerY = GetScreenHeight() / 2.0f;
 
       DrawTextEx(font, msg1, {(GetScreenWidth() - pos1.x) / 2, centerY - pos1.y}, fontSize1, 2, WHITE);
 
