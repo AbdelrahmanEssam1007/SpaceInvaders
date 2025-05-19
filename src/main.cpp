@@ -1,3 +1,4 @@
+#include <iostream>
 #include <raylib.h>
 #include <string>
 
@@ -16,9 +17,18 @@ std::string FormatScore(const int score, const int width) {
   return scoreString;
 }
 
+void ExitGame() {
+  if (IsKeyDown(KEY_LEFT_SHIFT) && IsKeyPressed(KEY_ESCAPE)) {
+    CloseWindow();
+  }
+}
+
+bool g_IS_PAUSED = false;
+
 
 int main() {
   InitWindow(g_SCREEN_WIDTH + g_OFFSET, g_SCREEN_HEIGHT + 2 * g_OFFSET, "Space Invaders");
+  SetExitKey(KEY_NULL);
   InitAudioDevice();
 
   const Font font = LoadFontEx("src/game/assets/font.ttf", 64, nullptr, 0);
@@ -30,14 +40,32 @@ int main() {
   Game game;
 
   while (!WindowShouldClose()) {
-    UpdateMusicStream(game.m_Music);
-    game.HandleInput();
-    game.update();
+    if (GetKeyPressed() == KEY_ESCAPE) {
+      g_IS_PAUSED = !g_IS_PAUSED;
+    }
+    if (!g_IS_PAUSED) {
+      UpdateMusicStream(game.m_Music);
+      game.HandleInput();
+      game.update();
+    }
     BeginDrawing();
     ClearBackground(Colours::grey);
     DrawRectangleRoundedLinesEx({10, 10, 780, 780}, 0.18f, 20, 2, WHITE);
     DrawLineEx({10, 730}, {790, 730}, 2, WHITE);
     game.Draw();
+
+    // draw lives
+    for (size_t i = 0; i < game.GetLives(); ++i) {
+      DrawTextureV(shipImage, {static_cast<float>(g_OFFSET + (i + 1) * 50), 745}, WHITE);
+    }
+    // draw score and high score
+    DrawTextEx(font, "SCORE", {50, 20}, 20, 2, WHITE);
+    std::string scoreString = FormatScore(game.m_Score, 5);
+    DrawTextEx(font, scoreString.c_str(), {50, 50}, 20, 2, WHITE);
+    DrawTextEx(font, "HIGH-SCORE", {500, 20}, 20, 2, WHITE);
+    std::string highScoreString = FormatScore(game.m_HighScore, 5);
+    DrawTextEx(font, highScoreString.c_str(), {500, 50}, 20, 2, WHITE);
+    
     if (!game.m_Running) {
       DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(GRAY, 0.5f));
 
@@ -56,23 +84,27 @@ int main() {
 
       DrawTextEx(font, msg2, {(GetScreenWidth() - pos2.x) / 2, centerY + 10}, fontSize2, 2, WHITE);
     }
+    else if (g_IS_PAUSED) {
+      DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), Fade(GRAY, 0.5f));
+
+      const auto msg1 = "Game Paused";
+      const auto msg2 = "Press ESC to Continue";
+      constexpr float fontSize1 = 60;
+      constexpr float fontSize2 = 30;
+
+      Vector2 pos1 = MeasureTextEx(font, msg1, fontSize1, 2);
+      Vector2 pos2 = MeasureTextEx(font, msg2, fontSize2, 2);
+      const float centerY = GetScreenHeight() / 2.0f;
+
+      DrawTextEx(font, msg1, {(GetScreenWidth() - pos1.x) / 2, centerY - pos1.y}, fontSize1, 2, WHITE);
+      DrawTextEx(font, msg2, {(GetScreenWidth() - pos2.x) / 2, centerY + 10}, fontSize2, 2, WHITE);
+    }
     else {
       std::string levelString = "Level: " + std::to_string(game.m_LevelNumber);
       DrawTextEx(font, levelString.c_str(), {500, 750}, 20, 2, WHITE);
     }
-
-    for (size_t i = 0; i < game.GetLives(); ++i) {
-      DrawTextureV(shipImage, {static_cast<float>(g_OFFSET + (i + 1) * 50), 745}, WHITE);
-    }
-
-    DrawTextEx(font, "SCORE", {50, 20}, 20, 2, WHITE);
-    std::string scoreString = FormatScore(game.m_Score, 5);
-    DrawTextEx(font, scoreString.c_str(), {50, 50}, 20, 2, WHITE);
-    DrawTextEx(font, "HIGH-SCORE", {500, 20}, 20, 2, WHITE);
-    std::string highScoreString = FormatScore(game.m_HighScore, 5);
-    DrawTextEx(font, highScoreString.c_str(), {500, 50}, 20, 2, WHITE);
-
     EndDrawing();
+    ExitGame();
   }
   CloseAudioDevice();
   CloseWindow();

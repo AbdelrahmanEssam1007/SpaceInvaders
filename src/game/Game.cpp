@@ -330,6 +330,8 @@ void Game::ClearStage() {
   m_TimeSinceLastSpawn = 0;
   m_MysteryShipInterval = GetRandomValue(10.0, 20.0);
   m_AlienMoveInterval = 1.0f;
-  m_PlayerLives++;
+  if (m_PlayerLives < 5) {
+    m_PlayerLives++;
+  }
   m_LevelNumber++;
 }
