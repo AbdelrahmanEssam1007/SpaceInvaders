@@ -65,7 +65,7 @@ GitHub repository.
 * Only one UFO can exist at a time
 
 ### WIP Features
-* Main Menu, Pause screens
+* Main Menu
 * Updated music and sound effects
 * Improved AI for aliens
 * Sprite animations
@@ -77,10 +77,13 @@ GitHub repository.
     * D or Right Arrow
 * Fire
     * Space
+* Pause Game
+    * ESC
 * Restart Game (must be in Game Over screen)
     * Enter
-* Quit
-    * Escape
+* Quit Game
+    * SHIFT + ESC (Hold Shift and press ESC)
+
 ## Technical Details
 
 * Language: C++
